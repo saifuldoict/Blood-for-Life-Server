@@ -10,10 +10,11 @@ app.use(cors());
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Life Sync is running successfully!');
+  res.send('Blood-for life server is running successfully!');
 });
 
-const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.kj2w8eq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0`;
+const uri = process.env.MONGODB_URI;
+
 
 const client = new MongoClient(uri, {
   serverApi: {
@@ -26,11 +27,9 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // await client.connect();
-    const UsersCollection = client.db('LifeSyncDB').collection('users');
-    const BlogPostCollection = client.db('LifeSyncDB').collection('blogPost');
-    const DonationRequestCollection = client
-      .db('LifeSyncDB')
-      .collection('donationRequests');
+    const UsersCollection = client.db('blood-for-life').collection('users');
+    const BlogPostCollection = client.db('blood-for-life').collection('blogPost');
+    const DonationRequestCollection = client.db('blood-for-life').collection('donationRequests');
 
     app.get('/users', async (req, res) => {
       const result = await UsersCollection.find().toArray();
@@ -240,10 +239,10 @@ async function run() {
       res.send(result);
     });
 
-    await client.db('admin').command({ ping: 1 });
-    console.log(
-      'Pinged your deployment. You successfully connected to MongoDB!'
-    );
+    // await client.db('admin').command({ ping: 1 });
+    // console.log(
+    //   'Pinged your deployment. You successfully connected to MongoDB!'
+    // );
   } finally {
     // await client.close();
   }
@@ -251,5 +250,5 @@ async function run() {
 run().catch(console.dir);
 
 app.listen(port, () => {
-  console.log(`Life Sync server listening on port ${port}`);
+  console.log(`blood-for-life listening on port ${port}`);
 });

@@ -95,16 +95,21 @@ async function run() {
       res.send(result);
     });
 
-    app.post('/users', async (req, res) => {
-      const user = req.body;
+   app.post('/users', async (req, res) => {
+  const user = req.body;
 
-// check if user already exists
-    if(email===user.email){
-      return res.status(400).json({ message: 'User already exists' });
-    }
-      const result = await UsersCollection.insertOne(user);
-      res.send(result);
-    });
+  // Check if user already exists
+  const existingUser = await UsersCollection.findOne({ email: user.email });
+
+  if (existingUser) {
+    return res.status(400).json({ message: 'User already exists' });
+  }
+
+  // Insert new user
+  const result = await UsersCollection.insertOne(user);
+  res.send(result);
+});
+
 
     app.get('/donation-requests', async (req, res) => {
       const result = await DonationRequestCollection.find().toArray();
